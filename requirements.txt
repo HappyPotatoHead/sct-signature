@@ -1,0 +1,7 @@
+streamlit
+pandas
+numpy
+torch==2.9.0
+torchvision==0.24.0
+opencv-python-headless
+huggingface-hub

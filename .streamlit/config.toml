@@ -1,0 +1,28 @@
+[theme]
+base="dark"
+primaryColor="#879A39"
+backgroundColor="#100F0F"
+secondaryBackgroundColor="#1C1B1A"
+textColor="#CECDC3"
+font="sans serif"
+linkColor="#879A39"
+linkUnderline=false
+
+[theme.dark]
+primaryColor="#879A39"
+backgroundColor="#100F0F"
+secondaryBackgroundColor="#1C1B1A"
+textColor="#CECDC3"
+font="sans serif"
+linkColor="#879A39"
+
+[theme.light]
+primaryColor="#205EA6"
+backgroundColor="#FFFCF0"
+secondaryBackgroundColor="#F2F0E5"
+textColor="#100F0F"
+font="sans serif"
+linkColor="#205EA6"
+
+[browser]
+serverPort=8501
