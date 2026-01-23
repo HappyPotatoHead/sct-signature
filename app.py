@@ -1,13 +1,13 @@
 import streamlit as st
 
 demonstration = st.Page(
-    "pages/demonstration.py"
+    "pages/demonstration.py",
     title="Offline Signature Verification",
     icon="✒️"
 )
 
 explanation = st.Page(
-    "pages/explanation.py"
+    "pages/explanation.py",
     title="How it Works",
     icon="📖"
 )
