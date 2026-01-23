@@ -17,13 +17,13 @@ def get_model(ckpt: str) -> FeatureExtractionModel:
 @st.cache_resource
 def load_example_images() -> dict[str, Image.Image]:
     return {
-        "original_11_1": Image.open("sct-signature/static/original_11_1.png"),
-        "original_11_4": Image.open("sct-signature/static/original_11_4.png"),
-        "forged_11_20": Image.open("sct-signature/static/forgeries_11_20.png"),
-        "original_21_1": Image.open("sct-signature/static/original_21_1.png"),
-        "original_8_4": Image.open("sct-signature/static/original_8_4.png"),
-        "original_8_5": Image.open("sct-signature/static/original_8_5.png"),
-        "forged_8_12": Image.open("sct-signature/static/forgeries_8_12.png"),
+        "original_11_1": Image.open("static/original_11_1.png"),
+        "original_11_4": Image.open("static/original_11_4.png"),
+        "forged_11_20": Image.open("static/forgeries_11_20.png"),
+        "original_21_1": Image.open("static/original_21_1.png"),
+        "original_8_4": Image.open("static/original_8_4.png"),
+        "original_8_5": Image.open("static/original_8_5.png"),
+        "forged_8_12": Image.open("static/forgeries_8_12.png"),
     }
 
 def display_signature_pair(

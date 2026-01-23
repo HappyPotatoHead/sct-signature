@@ -45,7 +45,7 @@ st.text(" ")
 
 left_column, centre_column, right_column = st.columns([1,2,1])
 with centre_column:
-    st.image("sct-signature/static/ideal_triplet_mining.png", "Embedding space", "stretch" )
+    st.image("static/ideal_triplet_mining.png", "Embedding space", "stretch" )
 
 st.markdown("""
     ## Model Architecture
@@ -79,7 +79,7 @@ st.text(" ")
 
 left_column, centre_column, right_column = st.columns([1,2,1])
 with centre_column:
-    st.image("sct-signature/static/lsc+_roc.png", "Embedding space", "stretch" )
+    st.image("static/lsc+_roc.png", "Embedding space", "stretch" )
 
 
 st.markdown("""

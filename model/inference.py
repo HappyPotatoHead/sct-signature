@@ -16,7 +16,7 @@ from utils.preprocessing import get_test_transform, preprocess_image_array
 
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-CHECKPOINT_PATH = Path("sct-signature/model/25_auc_0.1051.pt")
+# CHECKPOINT_PATH = Path("sct-signature/model/25_auc_0.1051.pt")
 
 
 @st.cache_resource  # type: ignore
@@ -33,7 +33,7 @@ def load_model(ckpt_path: str) -> FeatureExtractionModel:
         None
     )
     
-    checkpoint = torch.load(ckpt_path, map_location=DEVICE)
+    checkpoint = torch.load(cached_path, map_location=DEVICE)
     model.load_state_dict(checkpoint["model_state_dict"])
     
     model.to(DEVICE)
