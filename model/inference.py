@@ -24,7 +24,8 @@ def load_model(ckpt_path: str) -> FeatureExtractionModel:
     
     cached_path = hf_hub_download(
         repo_id=HF_REPO_ID,
-        filename=ckpt_path
+        filename=ckpt_path,
+        token=st.secrets["HF_TOKEN"]
     )
     
     model = FeatureExtractionModel(
