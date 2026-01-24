@@ -53,7 +53,7 @@ def render_sidebar() -> Tuple[str, float, FeatureExtractionModel]:
     st.sidebar.markdown("Augment variables to change how the model performs.")
     
     st.sidebar.subheader("Model Selection")
-    st.sidebar.markdown("Each model was trained with different loss functions. This sct-signature allows comparison between models in real time.")
+    st.sidebar.markdown("Each model was trained with different loss functions. This demonstration allows comparison between models in real time.")
     
     model_name = st.sidebar.selectbox(
         "Select verification model",
@@ -243,7 +243,7 @@ def render_error_analysis_section(images: dict[str, Image.Image], threshold: flo
 
 def main():
     st.title("Offline Signature Verification")
-    st.warning("This sct-signature does not store your signatures!")
+    st.warning("This demonstration does not store your signatures!")
     st.markdown("Compare two signatures and determine whether they belong to the same writer")
     
     # Load resources
