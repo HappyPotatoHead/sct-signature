@@ -17,13 +17,28 @@ def get_model(ckpt: str) -> FeatureExtractionModel:
 @st.cache_resource
 def load_example_images() -> dict[str, Image.Image]:
     return {
-        "original_11_1": Image.open("static/original_11_1.png"),
-        "original_11_4": Image.open("static/original_11_4.png"),
-        "forged_11_20": Image.open("static/forgeries_11_20.png"),
-        "original_21_1": Image.open("static/original_21_1.png"),
         "original_8_4": Image.open("static/original_8_4.png"),
         "original_8_5": Image.open("static/original_8_5.png"),
+        "original_8_9": Image.open("static/original_8_9.png"),
         "forged_8_12": Image.open("static/forgeries_8_12.png"),
+
+        "original_11_1": Image.open("static/original_11_1.png"),
+        "original_11_4": Image.open("static/original_11_4.png"),
+        "original_11_17":Image.open("static/original_11_17.png"),
+        "forged_11_20": Image.open("static/forgeries_11_20.png"),
+
+        "original_15_1": Image.open("static/original_15_1.png"),
+        "original_15_18": Image.open("static/original_15_18.png"),
+
+        "original_21_1": Image.open("static/original_21_1.png"),
+
+        "original_23_14": Image.open("static/original_23_14.png"),
+        "forged_23_24": Image.open("static/forgeries_23_24.png"),
+
+        "original_52_20": Image.open("static/original_52_20.png"),
+        "original_52_22": Image.open("static/original_52_22.png"),
+        "forged_52_1": Image.open("static/forgeries_52_1.png"),
+        "forged_52_6": Image.open("static/forgeries_52_6.png"),
     }
 
 def display_signature_pair(
@@ -32,15 +47,16 @@ def display_signature_pair(
     caption_1: str,
     caption_2: str    
 ) -> None:
-    col1, col2 = st.columns(2, gap="medium")
+    col1,mid_space, col2 = st.columns([2,1,2])
     with col1:
         st.image(img_1, caption_1, width=384)
+    with mid_space: pass
     with col2:
         st.image(img_2, caption_2, width=384)
 
 def display_verification_result(score: Optional[float], threshold: float) -> None:
-    st.markdown("### Score")
-    st.metric("Similarity score", f"{score:.3f}" if score is not None else "None")
+    # st.markdown("### Score")
+    st.metric("Similarity score: ", f"{score:.3f}" if score is not None else "None")
     
     if score is not None:
         if score >= threshold:
@@ -53,7 +69,7 @@ def render_sidebar() -> Tuple[str, float, FeatureExtractionModel]:
     st.sidebar.markdown("Augment variables to change how the model performs.")
     
     st.sidebar.subheader("Model Selection")
-    st.sidebar.markdown("Each model was trained with different loss functions. This demonstration allows comparison between models in real time.")
+    st.sidebar.markdown("Each model was trained with different loss functions.")
     
     model_name = st.sidebar.selectbox(
         "Select verification model",
@@ -73,14 +89,14 @@ def render_sidebar() -> Tuple[str, float, FeatureExtractionModel]:
         help="Higher values make verification stricter"
     )
     
-    st.sidebar.header("How To Interpret")
+    st.sidebar.header("How To: Interpret The Result")
     st.sidebar.markdown("""
-        The score is calculated with **cosine similarity [-1.0, 1.0]**: 
+        **Cosine similarity** is used to calculate similarity between signatures. 
         
         - Scores **closer to 1.0** are similar 
         - Scores **closer to 0.0** and below are dissimilar
         
-        The decision made is based on the selected **threshold**.
+        Decision made is based on the selected **threshold** above.
     """)
     
     model = get_model(str(model_info["ckpt"]))
@@ -92,23 +108,26 @@ def render_verification_section(model: FeatureExtractionModel, threshold: float)
     img_1 = placeholder
     img_2 = placeholder
     
-    st.markdown("## Verification")
-    
-    col1, col2 = st.columns(2, gap="medium")
+    st.markdown("## Test the model!")
+    st.markdown("Stress test the model and see if it's robust enough to filter your signatures!")
+
+    col1, mid_space, col2 = st.columns([2,1,2])
     
     with col1:
         img_1_file = st.file_uploader("Upload first signature", type=["png", "jpg"])
         if img_1_file:
             img_1 = Image.open(img_1_file)
             st.image(img_1, caption="Signature 1", width=384)
-    
+
+    with mid_space: pass 
+
     with col2:
         img_2_file = st.file_uploader("Upload second signature", type=["png", "jpg"])
         if img_2_file:
             img_2 = Image.open(img_2_file)
             st.image(img_2, caption="Signature 2", width=384)
     
-    button = st.button("Verify!", "verify_signature", "Click to begin verification", type="primary")
+    button = st.button("Verify", "verify_signature", "Click me! Don't hesitate~", type="primary", width="stretch")
     
     score = None
     if button:
@@ -131,15 +150,15 @@ def render_example_pair(
     threshold: float,
     calculate: bool
 ) -> None:
-    """Render a single example signature pair."""
-    st.markdown(f"### {title}")
-    display_signature_pair(img_1, img_2, caption_1, caption_2)
-    
+
     score = None
     if calculate:
         score = verify_signatures(img_1, img_2, model)
     
     display_verification_result(score, threshold)
+    st.markdown(f"**{title}**")
+    display_signature_pair(img_1, img_2, caption_1, caption_2)
+    
 
 
 def render_examples_section(
@@ -150,9 +169,13 @@ def render_examples_section(
     st.markdown("## Examples")
     
     st.info("""
-        **Note:** Example signatures shown are from the model's test set, which was 
-        held out during training. Performance on completely novel signatures from 
-        different sources may vary.
+        **Note - Examples** 
+        
+        The example signatures shown are from the model's test set, which were
+        held out during training. 
+        
+        Performance on completely novel signatures from 
+        different sources may vary, especially if the signature is of different script.
     """)
     
     calculate = st.button("Calculate All Examples!")
@@ -193,58 +216,105 @@ def render_examples_section(
 def render_error_analysis_section(images: dict[str, Image.Image], threshold: float) -> None:
     st.markdown("## Error Analysis")
     
-    st.info("The following section uses a model trained with $L_{SC+}$")
+    st.info("The following section follows a model trained with $L_{SC+}$")
     lsc_model = get_model(str(MODELS["SCT+"]["ckpt"]))
     
     st.markdown("""
-        As humans, we can perceive signatures holistically; we instantly 
-        notice differences in overall style, flow, and character formation. 
-        Models, however, work differently: they extract numerical features from the images 
-        (patterns of strokes, curves, and spatial relationships). 
-        
-        In the case of **false positives**, if a forged signature happens to share many of 
-        these learned features with a genuine one, the model may incorrectly classify them 
-        as matching, even when the forgery appears obviously different to the human eye. 
+        As humans, we have a bird's eyes view of the signatures; we instantly notice 
+        differences in overall style, flow, and character formation. 
 
-        Additionally, the model may exhibit counterintuitive behavior where it successfully 
-        differentiates difficult forgeries of one type yet fails at less difficult ones from 
-        another. This is because the model's decisions are based on patterns learned from its 
-        training data, whereby a lower volume of certain forgery types may not provide 
-        sufficient statistical information to the model. 
+        Deep learning models, however, do not have that privilege: 
+        they extract numerical features from images
+        (patterns of strokes, curves, and spatial relationships).      
+    """)
+    
+    st.markdown("### False Positive")
+    st.markdown("""
+        In the case of **false positives**, if a forged signature happens to share many of 
+        these learned characteristics with a genuine signature, the model may incorrectly 
+        classify them as matching, even when the forgery appears different to the human eye. 
         
+        Additionally, the model may exhibit counterintuitive behaviour where it successfully 
+        differentiates difficult forgeries from genuine signatures, yet it fails to discern less 
+        difficult signatures. This may be attributed to the inherent nature of low-shot learning: 
+        a lower volume of forged signatures can't provide sufficient statistical information to
+        the model. 
+        
+        It may also be attributed to the model learning paper artefacts rather than the strokes 
+        of the signature. Fortunately, this can be mitigated with binarisation, to which I have applied. 
+    """)
+
+    false_positive_score = verify_signatures(images["original_52_20"], images["forged_52_1"], lsc_model)
+    display_verification_result(false_positive_score, threshold)
+
+    display_signature_pair(
+        images["original_52_20"],
+        images["forged_52_1"],
+        "Original Signature ID 52 #20",
+        "Forged Signature ID 52 #1"
+    )
+
+    false_positive_score = verify_signatures(images["original_23_14"], images["forged_23_24"], lsc_model)
+    display_verification_result(false_positive_score, threshold)
+    
+    display_signature_pair(
+        images["original_23_14"],
+        images["forged_23_24"],
+        "Original Signature ID 23 #14",
+        "Forged Signature ID 23 #24"
+    )
+
+    false_positive_score = verify_signatures(images["original_52_22"], images["forged_52_6"], lsc_model)
+    display_verification_result(false_positive_score, threshold)
+
+    display_signature_pair(
+        images["original_52_22"],
+        images["forged_52_6"],
+        "Original Signature ID 52 #22",
+        "Forged Signature ID 52 #6"
+    )
+    
+    st.markdown("### False Negative")
+    st.markdown("""
         The same reasoning can be applied to the occurrence of **false negatives**, where 
         extreme differences between the query signature and the reference signature cause 
         the model to misclassify it as a forgery. In this case, however, the failure stems 
         not from the model but from natural variation - the signer may have produced a 
         signature that differs significantly from their reference due to inconsistent signing.
-        
-        See examples below:
     """)
-    
-    st.markdown("### False Positive")
-    display_signature_pair(
-        images["original_8_4"],
-        images["forged_8_12"],
-        "Original Signature ID 8 #4",
-        "Forged Signature ID 8 #12"
-    )
-    false_positive_score = verify_signatures(images["original_8_4"], images["forged_8_12"], lsc_model)
-    display_verification_result(false_positive_score, threshold)
-    
-    st.markdown("### False Negative")
+    false_negative_score = verify_signatures(images["original_8_4"], images["original_8_5"], lsc_model)
+    display_verification_result(false_negative_score, threshold)
+
     display_signature_pair(
         images["original_8_4"],
         images["original_8_5"],
         "Original Signature ID 8 #4",
         "Original Signature ID 8 #5"
     )
-    false_negative_score = verify_signatures(images["original_8_4"], images["original_8_5"], lsc_model)
+
+    false_negative_score = verify_signatures(images["original_15_1"], images["original_15_18"], lsc_model)
     display_verification_result(false_negative_score, threshold)
 
+    display_signature_pair(
+        images["original_15_1"],
+        images["original_15_18"],
+        "Original Signature ID 15 #1",
+        "Original Signature ID 15 #18"
+    )
+
+    false_negative_score = verify_signatures(images["original_11_17"], images["original_11_4"], lsc_model)
+    display_verification_result(false_negative_score, threshold)
+
+    display_signature_pair(
+        images["original_11_17"],
+        images["original_11_4"],
+        "Original Signature ID 11 #17",
+        "Original Signature ID 11 #4"
+    )
+
 def main():
-    st.title("Offline Signature Verification")
-    st.warning("This demonstration does not store your signatures!")
-    st.markdown("Compare two signatures and determine whether they belong to the same writer")
+    st.title("✒️ Offline Signature Verification")
+    st.warning("*This application does not host, store, or distribute any signature images.*")
     
     # Load resources
     images = load_example_images()

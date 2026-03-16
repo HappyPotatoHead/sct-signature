@@ -23,12 +23,12 @@ def check_image_type(
     if image.dtype != np.uint8:
         print(f"Warning: Input image dype is {image.dtype}, converting to uint8")
         image = image.astype(np.uint8)
-        
+
     if len(image.shape) == 3:
         if image.shape[2] == 3:
             print("Warning: Image is in colour, converting to grayscale")
             image = (cv.cvtColor(image, cv.COLOR_BGR2GRAY)).astype(np.uint8)
-        if image.shape[2] == 4:
+        elif image.shape[2] == 4:
             print("Warning: Image is in alpha, converting to grayscale")
             image = (cv.cvtColor(image, cv.COLOR_BGRA2GRAY)).astype(np.uint8)
     
@@ -71,7 +71,7 @@ def get_test_transform() -> transforms.Compose:
     return transforms.Compose([
         transforms.Resize((384, 384)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5], std=[0.5])\
+        transforms.Normalize(mean=[0.5], std=[0.5])
     ])
 
 def preprocess_image_array(
