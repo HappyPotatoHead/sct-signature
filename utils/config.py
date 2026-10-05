@@ -28,17 +28,17 @@ HF_REPO_ID = "HairyPotato/signature-models"
 
 MODELS: Dict[str, Dict[str, str | float]] = {
     "SCT+": {
-        "ckpt": "25_auc_0.1051.pt",
+        "ckpt": "lsc_plus.pt",
         "threshold": 0.725,
         "description": "Best overall performance on CEDAR"
     },
     "Batch Semi Hard Mining": {
-        "ckpt": "14_auc_0.0769.pt",
+        "ckpt": "semi_hard_triplet.pt",
         "threshold": 0.777,
         "description": "Second best performance on CEDAR"
     },
     "Batch Hard Mining": {
-        "ckpt": "5_auc_0.0693.pt",
+        "ckpt": "hard_triplet.pt",
         "threshold": 0.667,
         "description": "Worst performance on CEDAR"
     }
